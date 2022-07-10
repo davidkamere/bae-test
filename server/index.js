@@ -1,6 +1,7 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const clients = require('./database/clients')
+const path = require('path');
 
 const PORT = process.env.PORT || 3001;
 
@@ -11,7 +12,7 @@ app.use(bodyParser.urlencoded({
   extended:true
 }));
 
-
+app.use(express.static(path.resolve(__dirname, '../client/build')))
 
 //finds all clients
 app.get('/api/clients', (req, res) => {
@@ -55,6 +56,11 @@ app.delete('/api/clients/:id', (req, res) => {
 
   res.send(client)
 })
+
+// overall GET requests
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+});
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
